@@ -15,7 +15,7 @@ function robot(state) {
     return {drive}
 }
 
-// Factory function
+// Factory function. Concatinative inheritance:
 function robotDog(name, speed, age) {
     const state = {name, speed, age, kind: 'Robot dog'}
     const canineNature = canine(state)
