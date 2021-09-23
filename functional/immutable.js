@@ -29,3 +29,39 @@ class Company {
 
     getEmployees() { return [...this.employees] }
 }
+
+// Immutable:
+class Person {
+    constructor(name, age) {
+        this.name = name
+        this.age = age
+        Object.freeze(this)
+    }
+    getName() { return this.name }
+
+    getAge() { return this.age }
+}
+
+class Company {
+    constructor(name, address, employees = []) {
+        this.name = name
+        this.address = address
+        this.employees = employees
+        Object.freeze(this)
+    }
+
+    getName() { return this.name}
+
+    getAddress() { return this.address}
+
+    addEmployee(employee) { 
+        return new Company(this.name, this.address, [...this.employees, employee])
+     }
+
+    removeEmployee(employee) {
+        return new Company(this.name, this.address, this.employee.filter(e => e !== employee))
+    }
+
+    getEmployees() { return [...this.employees] }
+}
+
