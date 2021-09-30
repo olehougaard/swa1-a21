@@ -20,10 +20,14 @@ export default window => {
                 const event = { type: 'hire', id: p.id }
                 listeners.forEach(l => l(event))
             }
-
             tr.insertCell()
             tr.insertCell()
         }
+    }
+
+    const displayError = e => {
+        const msg_board = document.getElementById('error messages')
+        msg_board.innerText = e
     }
 
     const update = model => {
@@ -32,5 +36,5 @@ export default window => {
     }
     const prompt = window.prompt.bind(window)
 
-    return { addPerson, update, listen, prompt }
+    return { addPerson, update, listen, prompt, displayError }
 }

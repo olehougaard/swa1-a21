@@ -18,6 +18,7 @@
         import view from './view.js'
         
         window.init = function() {
+            const theView = view(window)
             const request = new XMLHttpRequest()
             request.open('GET', 'http://localhost:9090/persons')
             request.send()
@@ -28,7 +29,6 @@
                 request.onload = () => {
                     const employees = JSON.parse(request.responseText)
                     const theModel = model(persons, employees)
-                    const theView = view(window)
                     const thePresenter = presenter(theModel, theView)
                     theView.listen(thePresenter.onAction)
                     theView.update(theModel)
@@ -44,6 +44,7 @@
             <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
             <tbody id='employee_data'></tbody>
         </table>
+        <p> id='error messages'</p>
     </div>
 </body>
 </html>

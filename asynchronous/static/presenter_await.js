@@ -16,7 +16,7 @@ export default (init_model, view) => {
             model = model.addEmployee(employee).updatePerson(person)
             view.update(model)
           } catch (e) {
-            console.log(e)
+            view.displayError(e)
           }
         }
         break;
