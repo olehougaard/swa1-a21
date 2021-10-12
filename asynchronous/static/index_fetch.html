@@ -20,6 +20,7 @@
     window.init = function() {
         const theView = view(window)
         Promise.all([fetch('http://localhost:9090/persons'), fetch('http://localhost:9090/employees')])
+        .then(res => res.every(r => r.ok) ? r : Promise.reject('Error message'))
         .then(res => res.map(r => r.json()))
         .then(r => Promise.all(r))
         .then(([persons, employees]) => {
@@ -39,7 +40,7 @@
             <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
             <tbody id='employee_data'></tbody>
         </table>
-        <p> id='error messages'</p>
+        <p id='error messages'>
     </div>
 </body>
 </html>
