@@ -3,8 +3,8 @@ import bound_property from "./bound_property.js"
 export default (init_model) => {
   let model = init_model
 
-  const salary = bound_property(0)
-  const personData = bound_property(model.personData())
+  const salary = bound_property.create_initialized(0)
+  const personData = bound_property.create_initialized(model.personData())
   
   const hire = async (id) => {
     if (salary.get() > 0) {
