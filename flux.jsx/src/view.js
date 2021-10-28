@@ -34,7 +34,7 @@ export default dispatcher => model => (
         <h1>People</h1>
         <table id='employees'>
             <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
-            <PersonDataBody {...{model, dispatcher}}/>
+            <PersonDataBody model={model} dispatcher={dispatcher}/>
         </table>
     </div>
 )
