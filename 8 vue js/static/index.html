@@ -1,0 +1,52 @@
+<html>
+<head> 
+    <title>People</title>
+    <style>
+        td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid black;
+        }
+        table {
+            border: 1px solid black;
+            border-spacing: 0;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script type = 'module'>
+        import model from './model.js'
+        import viewmodel from './viewmodel.js'
+        
+        window.init = async function() {
+            const persons = await fetch('http://localhost:9090/persons').then(res => res.json())
+            const employees = await fetch('http://localhost:9090/employees').then(res => res.json())
+            const theModel = model(persons, employees)
+            const vm = viewmodel(document.getElementById('base'), theModel)
+            const app = new Vue(vm)
+        }
+    </script>
+</head>
+<body onload="init()">
+    <div id='base'>
+        <h1>People</h1>
+        <table id='employees'>
+            <thead><tr><td>Id</td><td>Name</td><td>Employee id</td><td>Salary</td><td>Manager</td></tr></thead>
+            <tbody id='employee_data'>
+                <tr v-for='p in personData'>
+                    <td>{{ p.id }} </td>
+                    <td>{{ p.name }} </td>
+                    <template v-if='p.employeeId'>
+                        <td>{{ p.employeeId }}</td>
+                        <td>{{ p.salary ?? 0 }}</td>
+                        <td>{{ Boolean(p.manager) }}</td>
+                    </template>
+                    <template v-else>
+                        <td colspan = "3"><button @click='hire(p.id)'>Hire</button></td>
+                    </template>
+                </tr>
+            </tbody>
+        </table>
+        <div>Salary: <input v-model:value='salary' id='salary'></div>
+    </div>
+</body>
+</html>
