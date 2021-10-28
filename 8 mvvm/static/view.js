@@ -1,9 +1,11 @@
+import bound_property from "./bound_property.js"
+
 export default (window, viewmodel) => {
     const document = window.document
     const table_body = document.getElementById('employee_data')
     const salary = document.getElementById('salary')
 
-    viewmodel.bindSalary(salary, 'value', l => salary.onchange = l)
+    viewmodel.bindSalary(bound_property.from_attribute(salary, 'value', l => salary.addEventListener('change', l)))
 
     const personRow = p => {
         const tr = document.createElement('tr')
@@ -29,9 +31,5 @@ export default (window, viewmodel) => {
         table_body.replaceChildren(...persons.map(personRow))
     }
 
-    Object.defineProperty(table_body, 'personData', {
-        set(data) { update(data) }
-    })
-    
-    viewmodel.bindPersonData(table_body, 'personData')
+    viewmodel.bindPersonData({ set: update })
 }
