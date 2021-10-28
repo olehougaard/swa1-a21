@@ -10,11 +10,13 @@ function bound_property(value) {
         }
     }
 
+    // Requires an object with a set method. Calls the set method whenever this propery changes.
     const single_bind = property => {
         property.set(get())
         bound.push(property)
     }
 
+    // Requires a property with at least set and single_bind
     const double_bind = property => {
         single_bind(property)
         property.single_bind({ set })
@@ -23,18 +25,24 @@ function bound_property(value) {
     return { get, set, single_bind, double_bind }
 }
 
-bound_property.from_attribute = (o, att, addListener) => {
-    const get = () => o[att]
+// Creates a bound property from an attribute on an element
+// element - the HTML element in question
+// attribute - the attribute that should be bound
+// addListener - a function that adds a listener that responds to changes in the element
+bound_property.from_attribute = (element, attribute, addListener) => {
+    const get = () => element[attribute]
 
     const set = v => {
-        if (v !== get()) o[att] = v
+        if (v !== get()) element[attribute] = v
     }
 
+    // Requires an object with a set method. Calls the set method whenever this propery changes.
     const single_bind = property => {
         property.set(get())
         addListener(() => property.set(get()))
     }
 
+    // Requires a property with at least set and single_bind
     const double_bind = property => {
         single_bind(property)
         property.single_bind({ set })
