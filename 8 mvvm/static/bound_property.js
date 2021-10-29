@@ -1,7 +1,7 @@
 function bound_property({ getValue, setValue }) {
     const bound = []
     
-    const notify = () => bound.forEach(({ property, convert}) => property.set(convert(getValue()))) 
+    const notify = () => bound.forEach((property) => property.set(getValue())) 
 
     const get = getValue
 
@@ -13,15 +13,15 @@ function bound_property({ getValue, setValue }) {
     }
 
     // Requires an object with a set method. Calls the set method whenever this propery changes.
-    const single_bind = (property, convert = x => x) => {
-        property.set(convert(getValue()))
-        bound.push({property, convert})
+    const single_bind = (property) => {
+        property.set(getValue())
+        bound.push(property)
     }
 
     // Requires a property with at least set and single_bind
-    const double_bind = (property, convert_to = x => x, convert_from = x => x) => {
-        single_bind(property, convert_to)
-        property.single_bind({ set }, convert_from)
+    const double_bind = (property) => {
+        single_bind(property)
+        property.single_bind({ set })
     }
 
     return { get, set, single_bind, double_bind, notify }
@@ -31,6 +31,19 @@ bound_property.create_initialized = (value) => bound_property({
     getValue: () => value,
     setValue: v => value = v
 })
+
+bound_property.computed = (property, compute_get, compute_set) => {
+    const computed = bound_property({
+        getValue: () => compute_get(property.get()),
+        setValue: v => property.set(compute_set(v))
+    })
+    property.single_bind({set: _ => computed.notify()})
+    if (typeof compute_set !== 'function') {
+        delete computed.set
+        delete computed.double_bind
+    }
+    return computed
+}
 
 // Creates a bound property from an attribute on an element
 // element - the HTML element in question
