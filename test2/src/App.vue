@@ -2,6 +2,7 @@
   <div id="dynamic-component-demo" class="demo">
     <h1>People</h1>
     <personnel :persons='persons' @hire='hire'/>
+    <div>Salary: <input v-model='salary' id='salary'></div>
   </div>
 </template>
 
@@ -12,13 +13,26 @@ export default {
   name: 'App',
   data() {
     return {
-      persons: [{id: 1, name: "Joe"}, {id: 2, name:"Liz", employeeId: 17}]
+      model: {},
+      salary: 0
     }
   },
+  computed: {
+    persons() { return this.model.personData() }
+  },
   methods: {
-    hire({id}) {
-      this.$window.alert('id ' + id)
-    }
+    async hire({id}) {
+      if (this.salary > 0) {
+        const headers = { 'Content-Type': 'application/json', Accept: 'application/json' }
+        const employee_res = await fetch('http://localhost:9090/employees', { method: 'POST', body: JSON.stringify({salary: this.salary, manager:false}), headers })
+        const employee = await employee_res.json()
+        const { employeeId } = employee
+        const person_res = await fetch('http://localhost:9090/persons/' + id, { method: 'PATCH', body: JSON.stringify({ employeeId }), headers })
+        const person = await person_res.json()
+        this.model = this.model.addEmployee(employee).updatePerson(person)
+        this.salary = 0
+      }
+    }  
   },
   components: {
     Personnel
